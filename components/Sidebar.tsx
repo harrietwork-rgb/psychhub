@@ -18,6 +18,10 @@ export default function Sidebar() {
           📚 Papers
         </Link>
 
+        <Link href="/notes">
+         📝 Notes
+        </Link>
+
         <Link href="/planner">
           📅 Planner
         </Link>
