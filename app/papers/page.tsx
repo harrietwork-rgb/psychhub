@@ -1,10 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PaperCard from "@/components/PaperCard";
 
+type Paper = {
+  title: string;
+  author: string;
+  tag: string;
+};
+
 export default function Papers() {
-  const [papers, setPapers] = useState([
+  const [papers, setPapers] = useState<Paper[]>([
     {
       title: "Working Memory",
       author: "Baddeley (1974)",
@@ -17,30 +23,52 @@ export default function Papers() {
   const [tag, setTag] = useState("");
   const [search, setSearch] = useState("");
 
+  useEffect(() => {
+    const savedPapers = JSON.parse(
+      localStorage.getItem("papers") || "[]"
+    );
+
+    setPapers((current) => [
+      ...current,
+      ...savedPapers,
+    ]);
+  }, []);
+
   function addPaper() {
     if (!title || !author || !tag) return;
 
-    setPapers([
+    const newPaper = {
+      title,
+      author,
+      tag,
+    };
+
+    const updatedPapers = [
       ...papers,
-      {
-        title,
-        author,
-        tag,
-      },
-    ]);
+      newPaper,
+    ];
+
+    setPapers(updatedPapers);
+
+    localStorage.setItem(
+      "papers",
+      JSON.stringify(updatedPapers)
+    );
 
     setTitle("");
     setAuthor("");
     setTag("");
   }
-const filteredPapers = papers.filter((paper) =>
-  paper.title.toLowerCase().includes(search.toLowerCase()) ||
-  paper.author.toLowerCase().includes(search.toLowerCase()) ||
-  paper.tag.toLowerCase().includes(search.toLowerCase())
-);
-  return (
 
+  const filteredPapers = papers.filter((paper) =>
+    paper.title.toLowerCase().includes(search.toLowerCase()) ||
+    paper.author.toLowerCase().includes(search.toLowerCase()) ||
+    paper.tag.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
     <main className="p-10">
+
       <h1 className="text-4xl font-bold">
         Research Papers 📚
       </h1>
@@ -49,17 +77,21 @@ const filteredPapers = papers.filter((paper) =>
         Organise and review your psychology papers.
       </p>
 
+
       <input
-  className="mt-6 w-full rounded border p-3"
-  placeholder="Search papers..."
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-/>
+        className="mt-6 w-full rounded border p-3"
+        placeholder="Search papers..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
 
       <div className="mt-8 rounded-lg border p-6">
+
         <h2 className="text-2xl font-bold">
           Add New Paper
         </h2>
+
 
         <input
           className="mt-4 w-full rounded border p-3"
@@ -68,12 +100,14 @@ const filteredPapers = papers.filter((paper) =>
           onChange={(e) => setTitle(e.target.value)}
         />
 
+
         <input
           className="mt-4 w-full rounded border p-3"
           placeholder="Author"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
         />
+
 
         <input
           className="mt-4 w-full rounded border p-3"
@@ -82,23 +116,26 @@ const filteredPapers = papers.filter((paper) =>
           onChange={(e) => setTag(e.target.value)}
         />
 
+
         <button
           onClick={addPaper}
           className="mt-4 rounded bg-black px-5 py-3 text-white"
         >
           Add Paper
         </button>
+
       </div>
 
 
       <div className="mt-8 grid gap-6 md:grid-cols-3">
-       {filteredPapers.map((paper, index) => (
-            
-<PaperCard
-  key={index}
-  paper={paper}
-/>
+
+        {filteredPapers.map((paper) => (
+          <PaperCard
+            key={paper.title}
+            paper={paper}
+          />
         ))}
+
       </div>
 
     </main>
