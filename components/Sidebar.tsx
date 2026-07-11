@@ -22,6 +22,10 @@ export default function Sidebar() {
          📝 Notes
         </Link>
 
+        <Link href="/favourites">
+          ⭐ Favourites
+        </Link>
+
         <Link href="/planner">
           📅 Planner
         </Link>
