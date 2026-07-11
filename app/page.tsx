@@ -1,5 +1,51 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+
 export default function Home() {
+const [stats, setStats] = useState({
+  notes: 0,
+  favourites: 0,
+  tasks: 0,
+});
+
+useEffect(() => {
+  let noteCount = 0;
+  let favouriteCount = 0;
+  let taskCount = 0;
+
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+
+    if (key?.startsWith("notes-")) {
+      noteCount++;
+    }
+
+    if (key?.startsWith("favourite-")) {
+      const value = localStorage.getItem(key);
+
+      if (value === "true") {
+        favouriteCount++;
+      }
+    }
+
+    if (key === "planner-tasks") {
+      const savedTasks = localStorage.getItem(key);
+
+      if (savedTasks) {
+        taskCount = JSON.parse(savedTasks).length;
+      }
+    }
+  }
+
+  setStats({
+    notes: noteCount,
+    favourites: favouriteCount,
+    tasks: taskCount,
+  });
+
+}, []);
   return (
     <main className="p-10">
 
@@ -27,17 +73,30 @@ export default function Home() {
 
 
   <Link
-    href="/papers"
+  href="/notes"
     className="rounded-lg border p-6 hover:bg-gray-100"
   >
     <h2 className="text-xl font-bold">
       📝 Notes
     </h2>
+
     <p className="mt-2">
-      Review your study notes
-    </p>
+  {stats.notes} saved notes
+</p>
   </Link>
 
+<Link
+  href="/favourites"
+  className="rounded-lg border p-6 hover:bg-gray-100"
+>
+  <h2 className="text-xl font-bold">
+    ⭐ Favourites
+  </h2>
+
+  <p className="mt-2">
+    {stats.favourites} favourite papers
+  </p>
+</Link>
 
     <Link
     href="/planner"
@@ -46,8 +105,9 @@ export default function Home() {
     <h2 className="text-xl font-bold">
       📅 Planner
     </h2>
+
     <p className="mt-2">
-      Organise your revision
+     {stats.tasks} study tasks
     </p>
   </Link>
 
