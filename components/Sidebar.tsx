@@ -1,35 +1,29 @@
+import Link from "next/link";
+
 export default function Sidebar() {
   return (
-    <aside className="h-screen w-64 bg-gray-900 p-6 text-white">
-      <h1 className="text-2xl font-bold">
-        PsychHub 🧠
+    <aside className="w-64 min-h-screen border-r p-6">
+
+      <h1 className="text-2xl font-bold mb-8">
+        🧠 PsychHub
       </h1>
 
-      <nav className="mt-8 space-y-4">
-        <a href="/dashboard">
-          📊 Dashboard
-        </a>
+      <nav className="space-y-4">
 
-        <a href="/papers">
+        <Link href="/">
+          🏠 Dashboard
+        </Link>
+
+        <Link href="/papers">
           📚 Papers
-        </a>
+        </Link>
 
-        <a href="/notes">
-          📝 Notes
-        </a>
-
-        <a href="/flashcards">
-          📖 Flashcards
-        </a>
-
-        <a href="/planner">
+        <Link href="/planner">
           📅 Planner
-        </a>
+        </Link>
 
-        <a href="/stats">
-          📈 Statistics
-        </a>
       </nav>
+
     </aside>
   );
 }
