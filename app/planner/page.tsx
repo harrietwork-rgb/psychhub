@@ -1,52 +1,81 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Planner() {
-  const [tasks, setTasks] = useState([
-    "Read Baddeley (1974)",
-    "Summarise Stroop (1935)",
-  ]);
-
+export default function PlannerPage() {
   const [task, setTask] = useState("");
+  const [tasks, setTasks] = useState<string[]>([]);
 
-  function addTask() {
-    if (!task.trim()) return;
+  useEffect(() => {
+  const savedTasks = localStorage.getItem("planner-tasks");
 
-    setTasks([...tasks, task]);
-    setTask("");
+  if (savedTasks) {
+    setTasks(JSON.parse(savedTasks));
   }
+}, []);
+
+function addTask() {
+  if (task.trim() === "") return;
+
+  const updatedTasks = [
+    ...tasks,
+    task
+  ];
+
+  setTasks(updatedTasks);
+
+  localStorage.setItem(
+    "planner-tasks",
+    JSON.stringify(updatedTasks)
+  );
+
+  setTask("");
+}
 
   return (
     <main className="p-10">
+
       <h1 className="text-4xl font-bold">
-        Study Planner 📅
+        📅 Study Planner
       </h1>
 
-      <input
-        className="mt-6 w-full rounded border p-3"
-        placeholder="Add a study task..."
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
-      />
+      <p className="mt-3 text-gray-600">
+        Organise your psychology study tasks.
+      </p>
 
-      <button
-        onClick={addTask}
-        className="mt-4 rounded bg-black px-5 py-3 text-white"
-      >
-        Add Task
-      </button>
+
+      <div className="mt-8 flex gap-3">
+
+        <input
+          className="rounded border p-3 flex-1"
+          placeholder="Add a study task..."
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+        />
+
+        <button
+          onClick={addTask}
+          className="rounded bg-black px-5 text-white"
+        >
+          Add
+        </button>
+
+      </div>
+
 
       <div className="mt-8 space-y-3">
-        {tasks.map((task, index) => (
+
+        {tasks.map((item, index) => (
           <div
             key={index}
-            className="rounded border p-4"
+            className="rounded-lg border p-4"
           >
-            ☐ {task}
+            ☐ {item}
           </div>
         ))}
+
       </div>
+
     </main>
   );
 }
