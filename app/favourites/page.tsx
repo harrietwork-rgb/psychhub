@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function FavouritesPage() {
@@ -44,12 +45,13 @@ export default function FavouritesPage() {
           </p>
         ) : (
           favourites.map((paper) => (
-            <div
-              key={paper}
-              className="rounded-lg border p-6"
-            >
-              📄 {paper}
-            </div>
+        <Link
+            key={paper}
+            href={`/papers/${paper}`}
+            className="block rounded-lg border p-6 hover:bg-gray-100"
+        >
+            📄 {paper}
+        </Link>
           ))
         )}
 
