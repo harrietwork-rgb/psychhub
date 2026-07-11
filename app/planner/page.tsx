@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 
 export default function PlannerPage() {
   const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState<string[]>([]);
+  type Task = {
+  text: string;
+  completed: boolean;
+};
+
+const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
   const savedTasks = localStorage.getItem("planner-tasks");
@@ -19,7 +24,10 @@ function addTask() {
 
   const updatedTasks = [
     ...tasks,
-    task
+    {
+      text: task,
+      completed: false,
+    },
   ];
 
   setTasks(updatedTasks);
@@ -65,14 +73,46 @@ function addTask() {
 
       <div className="mt-8 space-y-3">
 
-        {tasks.map((item, index) => (
-          <div
-            key={index}
-            className="rounded-lg border p-4"
-          >
-            ☐ {item}
-          </div>
-        ))}
+      {tasks.map((item, index) => (
+        <div
+          key={index}
+          className="rounded-lg border p-4 flex gap-3"
+        >
+
+        <input
+          type="checkbox"
+          checked={item.completed}
+          onChange={() => {
+            const updatedTasks = tasks.map((task, i) =>
+              i === index
+                ? {
+                    ...task,
+                    completed: !task.completed,
+                  }
+                 : task
+          );
+
+          setTasks(updatedTasks);
+
+          localStorage.setItem(
+            "planner-tasks",
+            JSON.stringify(updatedTasks)
+          );
+        }}
+      />
+
+      <span
+        className={
+          item.completed
+            ? "line-through text-gray-500"
+            : ""
+      }
+    >
+      {item.text}
+    </span>
+
+  </div>
+))}
 
       </div>
 
