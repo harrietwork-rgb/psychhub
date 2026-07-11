@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 
 export default function NotesPage() {
-  const [notes, setNotes] = useState<string[]>([]);
+  const [notes, setNotes] = useState<
+    { paper: string; content: string }[]
+  >([]);
 
   useEffect(() => {
-    const savedNotes = [];
+    const savedNotes: { paper: string; content: string }[] = [];
 
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -15,7 +17,7 @@ export default function NotesPage() {
         const note = localStorage.getItem(key);
 
         if (note) {
-          savedNotes.push(note);
+          savedNotes.push(JSON.parse(note));
         }
       }
     }
@@ -46,7 +48,14 @@ export default function NotesPage() {
               key={index}
               className="rounded-lg border p-6"
             >
-              {note}
+              <h2 className="font-bold">
+                📄 {note.paper}
+              </h2>
+
+              <p className="mt-3">
+                {note.content}
+              </p>
+
             </div>
           ))
         )}

@@ -17,8 +17,17 @@ export default function PaperDetails({
     setNotes(savedNotes);
   }
 }, [title]);
-  function saveNotes() {
-  localStorage.setItem(`notes-${title}`, notes);
+function saveNotes() {
+  const noteData = {
+    paper: title,
+    content: notes,
+  };
+
+  localStorage.setItem(
+    `notes-${title}`,
+    JSON.stringify(noteData)
+  );
+
   alert("Notes saved!");
 }
 
