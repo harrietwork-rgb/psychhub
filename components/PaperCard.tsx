@@ -10,11 +10,10 @@ export default function PaperCard({
   paper: Paper;
   onDelete: (id: string) => void;
 }) {
-
   return (
     <div className="rounded-lg border p-6">
 
-        <Link href={`/papers/${paper.id}`}>
+      <Link href={`/papers/${paper.id}`}>
         <h2 className="text-xl font-bold hover:underline">
           📄 {paper.title}
         </h2>
@@ -28,6 +27,12 @@ export default function PaperCard({
         {paper.tag}
       </span>
 
+      <Link
+        href={`/papers/${paper.id}/edit`}
+        className="mt-4 block rounded border px-4 py-2 text-center"
+      >
+        ✏️ Edit
+      </Link>
 
       <button
         onClick={() => onDelete(paper.id)}

@@ -18,16 +18,7 @@ export default function PaperDetails({
       localStorage.getItem("papers") || "[]"
     );
 
-    const defaultPaper: Paper = {
-      id: "default-working-memory",
-      title: "Working Memory",
-      author: "Baddeley (1974)",
-      tag: "Memory",
-    };
-
-    const allPapers = [defaultPaper, ...savedPapers];
-
-    const foundPaper = allPapers.find(
+    const foundPaper = savedPapers.find(
       (paper) => paper.id === id
     );
 
@@ -43,7 +34,9 @@ export default function PaperDetails({
         setNotes(parsed.content);
       }
     }
+
   }, [id]);
+
 
   function saveNotes() {
     if (!paper) return;
@@ -62,15 +55,21 @@ export default function PaperDetails({
     alert("Notes saved!");
   }
 
+
   if (!paper) {
     return (
       <main className="p-10">
         <h1 className="text-3xl font-bold">
           Paper not found
         </h1>
+
+        <p className="mt-2">
+          This paper does not exist in your saved papers.
+        </p>
       </main>
     );
   }
+
 
   return (
     <main className="p-10">
@@ -78,6 +77,7 @@ export default function PaperDetails({
       <h1 className="text-4xl font-bold">
         {paper.title}
       </h1>
+
 
       <div className="mt-8 rounded-lg border p-6">
 
@@ -89,6 +89,7 @@ export default function PaperDetails({
           {paper.author}
         </p>
 
+
         <h2 className="mt-6 text-xl font-bold">
           Topic
         </h2>
@@ -97,9 +98,11 @@ export default function PaperDetails({
           {paper.tag}
         </p>
 
+
         <h2 className="mt-6 text-xl font-bold">
           Notes
         </h2>
+
 
         <textarea
           className="mt-2 w-full rounded border p-3"
@@ -109,12 +112,14 @@ export default function PaperDetails({
           onChange={(e) => setNotes(e.target.value)}
         />
 
+
         <button
           onClick={saveNotes}
           className="mt-4 rounded bg-black px-5 py-3 text-white"
         >
           Save Notes
         </button>
+
 
       </div>
 
