@@ -1,28 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import type { Paper } from "@/types/paper";
 
-type Paper = {
-  title: string;
-  author: string;
-  tag: string;
-};
-
-export default function PaperCard({ paper }: { paper: Paper }) {
-  const [favourite, setFavourite] = useState(false);
-  useEffect(() => {
-  const saved = localStorage.getItem(`favourite-${paper.title}`);
-
-  if (saved === "true") {
-    setFavourite(true);
-  }
-}, [paper.title]);
+export default function PaperCard({
+  paper,
+  onDelete,
+}: {
+  paper: Paper;
+  onDelete: (id: string) => void;
+}) {
 
   return (
     <div className="rounded-lg border p-6">
 
-      <Link href={`/papers/${paper.title}`}>
+        <Link href={`/papers/${paper.id}`}>
         <h2 className="text-xl font-bold hover:underline">
           📄 {paper.title}
         </h2>
@@ -36,21 +28,12 @@ export default function PaperCard({ paper }: { paper: Paper }) {
         {paper.tag}
       </span>
 
+
       <button
-        onClick={() => {
-          const newValue = !favourite;
-
-          setFavourite(newValue);
-
-          localStorage.setItem(
-              `favourite-${paper.title}`,
-              String(newValue)
-          );
-        }}
-        
+        onClick={() => onDelete(paper.id)}
         className="mt-4 block rounded border px-4 py-2"
       >
-        {favourite ? "⭐ Favourite" : "☆ Add Favourite"}
+        🗑 Delete
       </button>
 
     </div>

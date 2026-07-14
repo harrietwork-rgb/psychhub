@@ -2,69 +2,136 @@
 
 import { useEffect, useState } from "react";
 import PaperCard from "@/components/PaperCard";
-
-type Paper = {
-  title: string;
-  author: string;
-  tag: string;
-};
+import type { Paper } from "@/types/paper";
 
 export default function Papers() {
-  const [papers, setPapers] = useState<Paper[]>([
-    {
-      title: "Working Memory",
-      author: "Baddeley (1974)",
-      tag: "Memory",
-    },
-  ]);
+
+  const [papers, setPapers] = useState<Paper[]>([]);
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [tag, setTag] = useState("");
   const [search, setSearch] = useState("");
 
+
   useEffect(() => {
+
     const savedPapers = JSON.parse(
       localStorage.getItem("papers") || "[]"
     );
 
-    setPapers((current) => [
-      ...current,
+
+    const defaultPaper: Paper = {
+      id: "default-working-memory",
+      title: "Working Memory",
+      author: "Baddeley (1974)",
+      tag: "Memory",
+    };
+
+
+    const allPapers = [
+      defaultPaper,
       ...savedPapers,
-    ]);
+    ];
+
+
+    const uniquePapers = allPapers.filter(
+      (paper: Paper, index: number, self: Paper[]) =>
+        index ===
+        self.findIndex(
+          (p) => p.id === paper.id
+        )
+    );
+
+
+    setPapers(uniquePapers);
+
+
+    localStorage.setItem(
+      "papers",
+      JSON.stringify(uniquePapers)
+    );
+
+
   }, []);
 
+
+
   function addPaper() {
+
     if (!title || !author || !tag) return;
 
-    const newPaper = {
+
+    const newPaper: Paper = {
+      id: crypto.randomUUID(),
       title,
       author,
       tag,
     };
+
+
+    const alreadyExists = papers.some(
+      (paper) =>
+        paper.title === title &&
+        paper.author === author
+    );
+
+
+    if (alreadyExists) {
+      return;
+    }
+
 
     const updatedPapers = [
       ...papers,
       newPaper,
     ];
 
+
     setPapers(updatedPapers);
+
 
     localStorage.setItem(
       "papers",
       JSON.stringify(updatedPapers)
     );
 
+
     setTitle("");
     setAuthor("");
     setTag("");
+
   }
+
+
+
+  function deletePaper(id: string) {
+
+    const updatedPapers = papers.filter(
+      (paper) =>
+        paper.id !== id
+    );
+
+
+    setPapers(updatedPapers);
+
+
+    localStorage.setItem(
+      "papers",
+      JSON.stringify(updatedPapers)
+    );
+
+  }
+
+
 
   const filteredPapers = papers.filter((paper) =>
     paper.title.toLowerCase().includes(search.toLowerCase()) ||
     paper.author.toLowerCase().includes(search.toLowerCase()) ||
     paper.tag.toLowerCase().includes(search.toLowerCase())
   );
+
+
 
   return (
     <main className="p-10">
@@ -73,9 +140,11 @@ export default function Papers() {
         Research Papers 📚
       </h1>
 
+
       <p className="mt-2 text-gray-600">
         Organise and review your psychology papers.
       </p>
+
 
 
       <input
@@ -86,11 +155,14 @@ export default function Papers() {
       />
 
 
+
       <div className="mt-8 rounded-lg border p-6">
+
 
         <h2 className="text-2xl font-bold">
           Add New Paper
         </h2>
+
 
 
         <input
@@ -101,12 +173,14 @@ export default function Papers() {
         />
 
 
+
         <input
           className="mt-4 w-full rounded border p-3"
           placeholder="Author"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
         />
+
 
 
         <input
@@ -117,6 +191,7 @@ export default function Papers() {
         />
 
 
+
         <button
           onClick={addPaper}
           className="mt-4 rounded bg-black px-5 py-3 text-white"
@@ -124,19 +199,25 @@ export default function Papers() {
           Add Paper
         </button>
 
+
       </div>
+
 
 
       <div className="mt-8 grid gap-6 md:grid-cols-3">
 
-        {filteredPapers.map((paper) => (
-          <PaperCard
-            key={paper.title}
-            paper={paper}
-          />
-        ))}
+
+      {filteredPapers.map((paper) => (
+  <PaperCard
+    key={paper.id}
+    paper={paper}
+    onDelete={deletePaper}
+  />
+))}
+
 
       </div>
+
 
     </main>
   );
