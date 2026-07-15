@@ -25,6 +25,7 @@ export default function PaperCard({
   }, [paper.id]);
 
 
+
   function toggleFavourite() {
 
     const newValue = !favourite;
@@ -35,12 +36,13 @@ export default function PaperCard({
       `favourite-${paper.id}`,
       String(newValue)
     );
+
   }
+
 
 
   return (
     <div className="rounded-lg border p-6">
-
 
       <Link href={`/papers/${paper.id}`}>
         <h2 className="text-xl font-bold hover:underline">
@@ -59,28 +61,25 @@ export default function PaperCard({
       </span>
 
 
-      <button
-        onClick={toggleFavourite}
-        className="mt-4 block rounded border px-4 py-2"
-      >
-        {favourite ? "⭐ Favourited" : "☆ Add Favourite"}
-      </button>
+
+      <div className="mt-4 flex gap-3">
+
+        <button
+          onClick={toggleFavourite}
+          className="rounded border px-4 py-2"
+        >
+          {favourite ? "⭐ Favourited" : "☆ Favourite"}
+        </button>
 
 
-      <Link
-        href={`/papers/${paper.id}/edit`}
-        className="mt-4 block rounded border px-4 py-2 text-center"
-      >
-        ✏️ Edit
-      </Link>
+        <button
+          onClick={() => onDelete(paper.id)}
+          className="rounded border px-4 py-2"
+        >
+          🗑 Delete
+        </button>
 
-
-      <button
-        onClick={() => onDelete(paper.id)}
-        className="mt-4 block rounded border px-4 py-2"
-      >
-        🗑 Delete
-      </button>
+      </div>
 
 
     </div>
