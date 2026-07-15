@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Paper } from "@/types/paper";
 
 export default function Home() {
+
   const [stats, setStats] = useState({
     papers: 0,
     notes: 0,
@@ -12,49 +13,106 @@ export default function Home() {
     tasks: 0,
   });
 
+
+
   useEffect(() => {
-    let noteCount = 0;
-    let favouriteCount = 0;
-    let taskCount = 0;
 
-    const savedPapers: Paper[] = JSON.parse(
-      localStorage.getItem("papers") || "[]"
-    );
+    function loadStats() {
 
-    const paperCount = savedPapers.length;
+      let noteCount = 0;
+      let favouriteCount = 0;
+      let taskCount = 0;
 
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
 
-      if (key?.startsWith("notes-")) {
-        noteCount++;
-      }
+      const savedPapers: Paper[] = JSON.parse(
+        localStorage.getItem("papers") || "[]"
+      );
 
-      if (key?.startsWith("favourite-")) {
-        const value = localStorage.getItem(key);
 
-        if (value === "true") {
-          favouriteCount++;
+      const paperCount = savedPapers.length;
+
+
+
+      for (let i = 0; i < localStorage.length; i++) {
+
+        const key = localStorage.key(i);
+
+
+
+        if (key?.startsWith("favourite-")) {
+
+          const value = localStorage.getItem(key);
+
+          const paperId = key.replace(
+              "favourite-",
+              ""
+          );
+
+
+          const paperExists = savedPapers.some(
+            (paper) => paper.id === paperId
+          );
+
+
+          if (value === "true" && paperExists) {
+            favouriteCount++;
+          }
+
         }
-      }
 
-      if (key === "planner-tasks") {
-        const savedTasks = localStorage.getItem(key);
 
-        if (savedTasks) {
-          taskCount = JSON.parse(savedTasks).length;
+
+        if (key === "planner-tasks") {
+
+          const savedTasks = localStorage.getItem(key);
+
+          if (savedTasks) {
+            taskCount = JSON.parse(savedTasks).length;
+          }
+
         }
+
       }
+
+
+
+      setStats({
+        papers: paperCount,
+        notes: noteCount,
+        favourites: favouriteCount,
+        tasks: taskCount,
+      });
+
     }
 
-    setStats({
-      papers: paperCount,
-      notes: noteCount,
-      favourites: favouriteCount,
-      tasks: taskCount,
-    });
+
+
+    // Load when dashboard opens
+    loadStats();
+
+
+
+    // Reload when returning to the tab/page
+    window.addEventListener(
+      "focus",
+      loadStats
+    );
+
+
+
+    return () => {
+
+      window.removeEventListener(
+        "focus",
+        loadStats
+      );
+
+    };
+
 
   }, []);
+
+
 
   return (
     <main className="p-10">
@@ -63,16 +121,21 @@ export default function Home() {
         🧠 PsychHub Dashboard
       </h1>
 
+
       <p className="mt-3 text-gray-600">
         Your psychology study companion
       </p>
 
+
+
       <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+
 
         <Link
           href="/papers"
           className="rounded-lg border p-6 hover:bg-gray-100"
         >
+
           <h2 className="text-xl font-bold">
             📚 Papers
           </h2>
@@ -80,12 +143,16 @@ export default function Home() {
           <p className="mt-2">
             {stats.papers} saved papers
           </p>
+
         </Link>
+
+
 
         <Link
           href="/notes"
           className="rounded-lg border p-6 hover:bg-gray-100"
         >
+
           <h2 className="text-xl font-bold">
             📝 Notes
           </h2>
@@ -93,12 +160,17 @@ export default function Home() {
           <p className="mt-2">
             {stats.notes} saved notes
           </p>
+
         </Link>
+
+
+
 
         <Link
           href="/favourites"
           className="rounded-lg border p-6 hover:bg-gray-100"
         >
+
           <h2 className="text-xl font-bold">
             ⭐ Favourites
           </h2>
@@ -106,12 +178,17 @@ export default function Home() {
           <p className="mt-2">
             {stats.favourites} favourite papers
           </p>
+
         </Link>
+
+
+
 
         <Link
           href="/planner"
           className="rounded-lg border p-6 hover:bg-gray-100"
         >
+
           <h2 className="text-xl font-bold">
             📅 Planner
           </h2>
@@ -119,7 +196,9 @@ export default function Home() {
           <p className="mt-2">
             {stats.tasks} study tasks
           </p>
+
         </Link>
+
 
       </div>
 
