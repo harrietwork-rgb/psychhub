@@ -12,6 +12,8 @@ export default function Papers() {
   const [author, setAuthor] = useState("");
   const [tag, setTag] = useState("");
   const [search, setSearch] = useState("");
+  const [pdfUrl, setPdfUrl] = useState("");
+  const [articleUrl, setArticleUrl] = useState("");
 
 
   useEffect(() => {
@@ -26,14 +28,22 @@ export default function Papers() {
       title: "Working Memory",
       author: "Baddeley (1974)",
       tag: "Memory",
+      pdfUrl: "",
+      articleUrl: "",
     };
 
 
-    const allPapers = [
-      defaultPaper,
-      ...savedPapers,
-    ];
+    const updatedSavedPapers = savedPapers.map((paper: Paper) => ({
+      ...paper,
+      pdfUrl: paper.pdfUrl || "",
+      articleUrl: paper.articleUrl || "",
+    }));
 
+
+   const allPapers = [
+     defaultPaper,
+     ...updatedSavedPapers,
+   ];
 
     const uniquePapers = allPapers.filter(
       (paper: Paper, index: number, self: Paper[]) =>
@@ -67,6 +77,8 @@ export default function Papers() {
       title,
       author,
       tag,
+      pdfUrl,
+      articleUrl,
     };
 
 
@@ -100,6 +112,8 @@ export default function Papers() {
     setTitle("");
     setAuthor("");
     setTag("");
+    setPdfUrl("");
+    setArticleUrl("");
 
   }
 
@@ -191,6 +205,22 @@ export default function Papers() {
         />
 
 
+        <input
+          className="mt-4 w-full rounded border p-3"
+          placeholder="PDF URL (optional)"
+          value={pdfUrl}
+          onChange={(e) => setPdfUrl(e.target.value)}
+        />
+
+
+        <input
+          className="mt-4 w-full rounded border p-3"
+          placeholder="Journal Article URL (optional)"
+          value={articleUrl}
+          onChange={(e) => setArticleUrl(e.target.value)}
+        />
+
+
 
         <button
           onClick={addPaper}
@@ -208,12 +238,12 @@ export default function Papers() {
 
 
       {filteredPapers.map((paper) => (
-  <PaperCard
-    key={paper.id}
-    paper={paper}
-    onDelete={deletePaper}
-  />
-))}
+        <PaperCard
+          key={paper.id}
+          paper={paper}
+          onDelete={deletePaper}
+        />
+      ))}
 
 
       </div>

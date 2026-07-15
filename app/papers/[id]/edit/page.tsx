@@ -18,40 +18,54 @@ export default function EditPaper({
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [tag, setTag] = useState("");
+  const [pdfUrl, setPdfUrl] = useState("");
+  const [articleUrl, setArticleUrl] = useState("");
+
 
   useEffect(() => {
     const savedPapers: Paper[] = JSON.parse(
       localStorage.getItem("papers") || "[]"
     );
 
-  const foundPaper = savedPapers.find(
-    (paper) => paper.id === id
-  ) || {
-  id: "default-working-memory",
-  title: "Working Memory",
-  author: "Baddeley (1974)",
-  tag: "Memory",
- };
+
+    const foundPaper = savedPapers.find(
+      (paper) => paper.id === id
+    ) || {
+      id: "default-working-memory",
+      title: "Working Memory",
+      author: "Baddeley (1974)",
+      tag: "Memory",
+      pdfUrl: "",
+      articleUrl: "",
+    };
+
 
     if (foundPaper) {
       setPaper(foundPaper);
+
       setTitle(foundPaper.title);
       setAuthor(foundPaper.author);
       setTag(foundPaper.tag);
+      setPdfUrl(foundPaper.pdfUrl || "");
+      setArticleUrl(foundPaper.articleUrl || "");
     }
 
   }, [id]);
+
 
 
   function saveChanges() {
 
     if (!paper) return;
 
-    const updatedPaper = {
+
+    const updatedPaper: Paper = {
       id: paper.id,
       title,
       author,
       tag,
+      pdfUrl,
+      articleUrl,
     };
 
 
@@ -77,6 +91,7 @@ export default function EditPaper({
   }
 
 
+
   if (!paper) {
     return (
       <main className="p-10">
@@ -86,6 +101,7 @@ export default function EditPaper({
       </main>
     );
   }
+
 
 
   return (
@@ -98,6 +114,7 @@ export default function EditPaper({
 
       <input
         className="mt-6 w-full rounded border p-3"
+        placeholder="Paper title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
@@ -105,6 +122,7 @@ export default function EditPaper({
 
       <input
         className="mt-4 w-full rounded border p-3"
+        placeholder="Author"
         value={author}
         onChange={(e) => setAuthor(e.target.value)}
       />
@@ -112,8 +130,25 @@ export default function EditPaper({
 
       <input
         className="mt-4 w-full rounded border p-3"
+        placeholder="Topic"
         value={tag}
         onChange={(e) => setTag(e.target.value)}
+      />
+
+
+      <input
+        className="mt-4 w-full rounded border p-3"
+        placeholder="PDF URL (optional)"
+        value={pdfUrl}
+        onChange={(e) => setPdfUrl(e.target.value)}
+      />
+
+
+      <input
+        className="mt-4 w-full rounded border p-3"
+        placeholder="Journal Article URL (optional)"
+        value={articleUrl}
+        onChange={(e) => setArticleUrl(e.target.value)}
       />
 
 
